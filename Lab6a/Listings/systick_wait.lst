@@ -1,0 +1,192 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;------------SysTick_Wait------------
+    2 00000000         ; Time delay using busy wait.
+    3 00000000         ; Input: R0  delay parameter in units of the core clock 
+                       
+    4 00000000         ;        80 MHz(12.5 nsec each tick)
+    5 00000000         ; Output: none
+    6 00000000         ; Modifies: R1
+    7 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+    8 00000000 E000E010 
+                       NVIC_ST_CTRL_R
+                               EQU              0xE000E010
+    9 00000000 E000E014 
+                       NVIC_ST_RELOAD_R
+                               EQU              0xE000E014
+   10 00000000 E000E018 
+                       NVIC_ST_CURRENT_R
+                               EQU              0xE000E018
+   11 00000000 00010000 
+                       NVIC_ST_CTRL_COUNT
+                               EQU              0x00010000  ; Count flag
+   12 00000000 00000004 
+                       NVIC_ST_CTRL_CLK_SRC
+                               EQU              0x00000004  ; Clock Source
+   13 00000000 00000002 
+                       NVIC_ST_CTRL_INTEN
+                               EQU              0x00000002  ; Interrupt enable
+   14 00000000 00000001 
+                       NVIC_ST_CTRL_ENABLE
+                               EQU              0x00000001  ; Counter mode
+   15 00000000 00FFFFFF 
+                       NVIC_ST_RELOAD_M
+                               EQU              0x00FFFFFF  ; Counter load valu
+                                                            e
+   16 00000000         
+   17 00000000                 EXPORT           SysTick_Wait
+   18 00000000         SysTick_Wait
+   19 00000000 B503            PUSH             {R0,R1,LR}
+   20 00000002         ;;;;;;;;;;;;;;;;;;;;;;;
+   21 00000002 4807            LDR              R0,=0X00FFFFF 
+                                                            ;Time to be Delayed
+                                                            
+   22 00000004         ; LDR  R0,=0X07FFFFF     ;Time to be Delayed
+   23 00000004 F1A0 0001       SUB              R0, R0, #1  ; delay-1
+   24 00000008 4906            LDR              R1, =NVIC_ST_RELOAD_R
+   25 0000000A 6008            STR              R0, [R1]    ; time to wait
+   26 0000000C 4906            LDR              R1, =NVIC_ST_CURRENT_R
+   27 0000000E 6008            STR              R0, [R1]    ; any value written
+                                                             to CURRENT clears
+   28 00000010 4906            LDR              R1, =NVIC_ST_CTRL_R
+   29 00000012         SysTick_Wait_loop
+   30 00000012 6808            LDR              R0, [R1]    ; read status
+   31 00000014 F410 3080       ANDS             R0, R0, #0x00010000 ; bit 16 is
+                                                             COUNT flag
+   32 00000018 D0FB            BEQ              SysTick_Wait_loop ; repeat unti
+                                                            l flag set
+   33 0000001A E8BD 4003       POP              {R0,R1,LR}
+   34 0000001E 4770            BX               LR
+   35 00000020                 ALIGN
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   36 00000020                 END
+              000FFFFF 
+              E000E014 
+              E000E018 
+              E000E010 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\systick_wait.d -o.\objects\systick_wait.o -I.\RTE\
+_Target_1 -IC:\Users\Rafael\AppData\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMSIS\Core\
+Include -IC:\Users\Rafael\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\In
+clude\TM4C123 --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 5
+35" --predefine="_RTE_ SETA 1" --predefine="TM4C123GH6PM SETA 1" --predefine="_
+RTE_ SETA 1" --list=.\listings\systick_wait.lst Systick_Wait.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 7 in file Systick_Wait.s
+   Uses
+      None
+Comment: .text unused
+SysTick_Wait 00000000
+
+Symbol: SysTick_Wait
+   Definitions
+      At line 18 in file Systick_Wait.s
+   Uses
+      At line 17 in file Systick_Wait.s
+Comment: SysTick_Wait used once
+SysTick_Wait_loop 00000012
+
+Symbol: SysTick_Wait_loop
+   Definitions
+      At line 29 in file Systick_Wait.s
+   Uses
+      At line 32 in file Systick_Wait.s
+Comment: SysTick_Wait_loop used once
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+NVIC_ST_CTRL_CLK_SRC 00000004
+
+Symbol: NVIC_ST_CTRL_CLK_SRC
+   Definitions
+      At line 12 in file Systick_Wait.s
+   Uses
+      None
+Comment: NVIC_ST_CTRL_CLK_SRC unused
+NVIC_ST_CTRL_COUNT 00010000
+
+Symbol: NVIC_ST_CTRL_COUNT
+   Definitions
+      At line 11 in file Systick_Wait.s
+   Uses
+      None
+Comment: NVIC_ST_CTRL_COUNT unused
+NVIC_ST_CTRL_ENABLE 00000001
+
+Symbol: NVIC_ST_CTRL_ENABLE
+   Definitions
+      At line 14 in file Systick_Wait.s
+   Uses
+      None
+Comment: NVIC_ST_CTRL_ENABLE unused
+NVIC_ST_CTRL_INTEN 00000002
+
+Symbol: NVIC_ST_CTRL_INTEN
+   Definitions
+      At line 13 in file Systick_Wait.s
+   Uses
+      None
+Comment: NVIC_ST_CTRL_INTEN unused
+NVIC_ST_CTRL_R E000E010
+
+Symbol: NVIC_ST_CTRL_R
+   Definitions
+      At line 8 in file Systick_Wait.s
+   Uses
+      At line 28 in file Systick_Wait.s
+Comment: NVIC_ST_CTRL_R used once
+NVIC_ST_CURRENT_R E000E018
+
+Symbol: NVIC_ST_CURRENT_R
+   Definitions
+      At line 10 in file Systick_Wait.s
+   Uses
+      At line 26 in file Systick_Wait.s
+Comment: NVIC_ST_CURRENT_R used once
+NVIC_ST_RELOAD_M 00FFFFFF
+
+Symbol: NVIC_ST_RELOAD_M
+   Definitions
+      At line 15 in file Systick_Wait.s
+   Uses
+      None
+Comment: NVIC_ST_RELOAD_M unused
+NVIC_ST_RELOAD_R E000E014
+
+Symbol: NVIC_ST_RELOAD_R
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Absolute symbols
+
+   Definitions
+      At line 9 in file Systick_Wait.s
+   Uses
+      At line 24 in file Systick_Wait.s
+Comment: NVIC_ST_RELOAD_R used once
+8 symbols
+348 symbols in table

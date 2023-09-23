@@ -1,0 +1,198 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;   Program Knight Riders.s
+    2 00000000         ;   Swicht with Blink Red, Blue and Green
+    3 00000000         ;   Sent a Pulces to Port B
+    4 00000000         ;   Roman Lopez B.
+    5 00000000         ;   September 5, 2020
+    6 00000000         ;   !WORKs
+    7 00000000                 IMPORT           PORTF_Init
+    8 00000000                 IMPORT           PORTB_Init
+    9 00000000                 IMPORT           GPIO_PORTF_DATA_R
+   10 00000000                 IMPORT           GPIO_PORTB_DATA_R
+   11 00000000         
+   12 00000000 0007FFFF 
+                       M       EQU              0x007FFFF   ;Delay constant
+   13 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+   14 00000000                 THUMB
+   15 00000000                 EXPORT           Start
+   16 00000000         Start
+   17 00000000         ;-------------------------------------------------------
+                       ---------
+   18 00000000 F7FF FFFE       BL               PORTF_Init  ; initialize PF0 an
+                                                            d PF4 and make them
+                                                             inputs
+   19 00000004 F7FF FFFE       BL               PORTB_Init  ; initialize PB0 to
+                                                             PF7 as output
+   20 00000008 480F            LDR              R0,=GPIO_PORTB_DATA_R ;R0 Point
+                                                             PORTB Data
+   21 0000000A 4C10            LDR              R4,=GPIO_PORTF_DATA_R ;R0 Point
+                                                             PORTA Data
+   22 0000000C F04F 0100 
+                       Loop    MOV              R1,#0x00
+   23 00000010 7001            STRB             R1,[R0]     ;Turn Off The LEDs
+   24 00000012 7021            STRB             R1,[R4]     ;Turn Off Tiva
+   25 00000014 F04F 0305       MOV              R3,#0x5
+   26 00000018 F000 F809       BL               Delay
+   27 0000001C         
+   28 0000001C F04F 01FF       MOV              R1,#0xFF
+   29 00000020 7001            STRB             R1,[R0]     ;Turn on The PORT B
+                                                             LEDs
+   30 00000022 7021            STRB             R1,[R4]     ;Turn on Tiva
+   31 00000024 F04F 0305       MOV              R3,#0x5
+   32 00000028 F000 F801       BL               Delay
+   33 0000002C E7EE            B                Loop
+   34 0000002E         
+   35 0000002E         Delay
+   36 0000002E B50E            PUSH             {R1,R2,R3,LR}
+   37 00000030         Delay_Loop0
+   38 00000030 4A07            LDR              R2, =M      ;Set R2 =0x00FFFFFF
+                                                            
+   39 00000032         Delay_Loop1
+   40 00000032 F1A2 0201       SUB              R2,#1
+   41 00000036 2A00            CMP              R2,#0x0
+   42 00000038 D1FB            BNE              Delay_Loop1
+   43 0000003A         
+   44 0000003A F1A3 0301       SUB              R3,#1
+   45 0000003E 2B00            CMP              R3,#0
+   46 00000040 D1F6            BNE              Delay_Loop0
+   47 00000042 E8BD 400E       POP              {R1,R2,R3,LR}
+   48 00000046 4770            BX               LR
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   49 00000048         
+   50 00000048                 ALIGN                        ; make sure the end
+                                                             of this section is
+                                                             aligned
+   51 00000048                 END                          ; end of file
+              00000000 
+              00000000 
+              0007FFFF 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\knight_rider.d -o.\objects\knight_rider.o -IC:\Kei
+l_v5\ARM\RV31\Inc -I.\RTE\_Target_1 -IC:\Users\rolopez\AppData\Local\Arm\Packs\
+ARM\CMSIS\5.7.0\CMSIS\Core\Include -IC:\Users\rolopez\AppData\Local\Arm\Packs\K
+eil\TM4C_DFP\1.1.0\Device\Include\TM4C123 --predefine="__RTX SETA 1" --predefin
+e="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 531" --predefine="_RTE_ S
+ETA 1" --predefine="TM4C123GH6PM SETA 1" --predefine="_RTE_ SETA 1" --list=.\li
+stings\knight_rider.lst knight_rider.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 13 in file knight_rider.s
+   Uses
+      None
+Comment: .text unused
+Delay 0000002E
+
+Symbol: Delay
+   Definitions
+      At line 35 in file knight_rider.s
+   Uses
+      At line 26 in file knight_rider.s
+      At line 32 in file knight_rider.s
+
+Delay_Loop0 00000030
+
+Symbol: Delay_Loop0
+   Definitions
+      At line 37 in file knight_rider.s
+   Uses
+      At line 46 in file knight_rider.s
+Comment: Delay_Loop0 used once
+Delay_Loop1 00000032
+
+Symbol: Delay_Loop1
+   Definitions
+      At line 39 in file knight_rider.s
+   Uses
+      At line 42 in file knight_rider.s
+Comment: Delay_Loop1 used once
+Loop 0000000C
+
+Symbol: Loop
+   Definitions
+      At line 22 in file knight_rider.s
+   Uses
+      At line 33 in file knight_rider.s
+Comment: Loop used once
+Start 00000000
+
+Symbol: Start
+   Definitions
+      At line 16 in file knight_rider.s
+   Uses
+      At line 15 in file knight_rider.s
+Comment: Start used once
+6 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+M 0007FFFF
+
+Symbol: M
+   Definitions
+      At line 12 in file knight_rider.s
+   Uses
+      At line 38 in file knight_rider.s
+Comment: M used once
+1 symbol
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+GPIO_PORTB_DATA_R 00000000
+
+Symbol: GPIO_PORTB_DATA_R
+   Definitions
+      At line 10 in file knight_rider.s
+   Uses
+      At line 20 in file knight_rider.s
+Comment: GPIO_PORTB_DATA_R used once
+GPIO_PORTF_DATA_R 00000000
+
+Symbol: GPIO_PORTF_DATA_R
+   Definitions
+      At line 9 in file knight_rider.s
+   Uses
+      At line 21 in file knight_rider.s
+Comment: GPIO_PORTF_DATA_R used once
+PORTB_Init 00000000
+
+Symbol: PORTB_Init
+   Definitions
+      At line 8 in file knight_rider.s
+   Uses
+      At line 19 in file knight_rider.s
+Comment: PORTB_Init used once
+PORTF_Init 00000000
+
+Symbol: PORTF_Init
+   Definitions
+      At line 7 in file knight_rider.s
+   Uses
+      At line 18 in file knight_rider.s
+Comment: PORTF_Init used once
+4 symbols
+349 symbols in table

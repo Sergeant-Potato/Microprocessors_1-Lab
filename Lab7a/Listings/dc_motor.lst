@@ -1,0 +1,293 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;   Program DC_Motor.s
+    2 00000000         ;   Turn On and OFF a DC motor for a few seconds
+    3 00000000         ;   Used PORT B
+    4 00000000         ;   Roman Lopez B.
+    5 00000000         ;   January 30,2021
+    6 00000000         ;   !WORKs
+    7 00000000         
+    8 00000000                 IMPORT           PORTF_Init
+    9 00000000                 IMPORT           PORTB_Init
+   10 00000000                 IMPORT           GPIO_PORTF_DATA_R
+   11 00000000                 IMPORT           GPIO_PORTB_DATA_R
+   12 00000000                 AREA             MyConstant,CODE,READONLY
+   13 00000000         
+   14 00000000                 ALIGN            4
+   15 00000000 0000003F 
+                       M       EQU              0x0000003F  ;Delay constant
+   16 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+   17 00000000                 THUMB
+   18 00000000                 EXPORT           Start
+   19 00000000         
+   20 00000000         Start
+   21 00000000 F7FF FFFE       BL               PORTB_Init  ; initialize PB0 to
+                                                             PB7 as output
+   22 00000004 4826            LDR              R0,=GPIO_PORTB_DATA_R ;R0 Point
+                                                             PORTB Data
+   23 00000006 F04F 0900       MOV              R9,#0x00
+   24 0000000A         
+   25 0000000A F04F 0450 
+                       Loop    MOV              R4,#0x50
+   26 0000000E         ;Incre R7=2
+   27 0000000E F04F 0700       MOV              R7,#0
+   28 00000012 F44F 78A8 
+                       Loop0   MOV              R8,#0X150   ;R8 is the counter
+   29 00000016 EBA4 0507       SUB              R5,R4,R7    ;R5 = Time Hight
+   30 0000001A EBA4 0605       SUB              R6,R4,R5    ;R6 = Time Low
+   31 0000001E F1B9 0F00       CMP              R9,#0x00
+   32 00000022 D000            BEQ              Loop1
+   33 00000024 D115            BNE              Loop2
+   34 00000026         
+   35 00000026 F04F 0201 
+                       Loop1   MOV              R2,#0x01
+   36 0000002A 7002            STRB             R2,[R0]     ;Turn Off Dc motor
+   37 0000002C 462B            MOV              R3,R5       ;Dela number of sec
+                                                            od
+   38 0000002E F000 F826       BL               Delay       ;Delay somes second
+                                                            
+   39 00000032 F04F 0200       MOV              R2,#0x00
+   40 00000036 7002            STRB             R2,[R0]     ;Turn On Dc motor
+   41 00000038 4633            MOV              R3,R6       ;Delay number of se
+                                                            cod
+   42 0000003A F000 F820       BL               Delay       ;Delay one second X
+                                                             R3
+   43 0000003E F1B8 0801       SUBS             R8,R8,#1
+   44 00000042 D1F0            BNE              Loop1
+   45 00000044 F107 0701       ADD              R7,#1
+   46 00000048 2F50            CMP              R7,#0x50
+   47 0000004A DBE2            BLT              Loop0
+   48 0000004C F04F 0901       MOV              R9,#0X01
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   49 00000050 E7DB            B                Loop
+   50 00000052         Loop2
+   51 00000052 F04F 0202       MOV              R2,#0x02
+   52 00000056 7002            STRB             R2,[R0]     ;Turn Off Dc motor
+   53 00000058 462B            MOV              R3,R5       ;Dela number of sec
+                                                            od
+   54 0000005A F000 F810       BL               Delay       ;Delay somes second
+                                                            
+   55 0000005E F04F 0200       MOV              R2,#0x00
+   56 00000062 7002            STRB             R2,[R0]     ;Turn On Dc motor
+   57 00000064 4633            MOV              R3,R6       ;Delay number of se
+                                                            cod
+   58 00000066 F000 F80A       BL               Delay       ;Delay one second X
+                                                             R3
+   59 0000006A F1B8 0801       SUBS             R8,R8,#1
+   60 0000006E D1F0            BNE              Loop2
+   61 00000070 F107 0701       ADD              R7,#1
+   62 00000074 2F50            CMP              R7,#0x50
+   63 00000076 DBCC            BLT              Loop0
+   64 00000078 F04F 0900       MOV              R9,#0X00
+   65 0000007C E7C5            B                Loop
+   66 0000007E         
+   67 0000007E         ;>>>>>> Subroutine Delay <<<<<<<<<< 
+   68 0000007E         ;  Reg R3  Number of seconds to be delayed
+   69 0000007E         ;       Reg R1  Constan M (one second delay)
+   70 0000007E         Delay
+   71 0000007E B50F            PUSH             {R0-R3,LR}
+   72 00000080 2B00            CMP              R3,#00
+   73 00000082 D009            BEQ              Exit
+   74 00000084         Delay_Loop0
+   75 00000084 F04F 023F       LDR              R2, =M      ;Set R2 =0x00FFFFFF
+                                                            
+   76 00000088         Delay_Loop1
+   77 00000088 F1A2 0201       SUB              R2,#1
+   78 0000008C 2A00            CMP              R2,#0x0
+   79 0000008E D1FB            BNE              Delay_Loop1
+   80 00000090 F1A3 0301       SUB              R3,#1
+   81 00000094 2B00            CMP              R3,#0
+   82 00000096 D1F5            BNE              Delay_Loop0
+   83 00000098 E8BD 400F 
+                       Exit    POP              {R0-R3,LR}
+   84 0000009C 4770            BX               LR
+   85 0000009E 00 00           ALIGN
+   86 000000A0                 END                          ; end of file
+              00000000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\dc_motor.d -o.\objects\dc_motor.o -I.\RTE\_Target_
+1 -IC:\Users\Rafael\AppData\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMSIS\Core\Include 
+-IC:\Users\Rafael\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM
+4C123 --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 535" --pr
+edefine="_RTE_ SETA 1" --predefine="TM4C123GH6PM SETA 1" --predefine="_RTE_ SET
+A 1" --list=.\listings\dc_motor.lst DC_motor.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+MyConstant 00000000
+
+Symbol: MyConstant
+   Definitions
+      At line 12 in file DC_motor.s
+   Uses
+      None
+Comment: MyConstant unused
+1 symbol
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 16 in file DC_motor.s
+   Uses
+      None
+Comment: .text unused
+Delay 0000007E
+
+Symbol: Delay
+   Definitions
+      At line 70 in file DC_motor.s
+   Uses
+      At line 38 in file DC_motor.s
+      At line 42 in file DC_motor.s
+      At line 54 in file DC_motor.s
+      At line 58 in file DC_motor.s
+
+Delay_Loop0 00000084
+
+Symbol: Delay_Loop0
+   Definitions
+      At line 74 in file DC_motor.s
+   Uses
+      At line 82 in file DC_motor.s
+Comment: Delay_Loop0 used once
+Delay_Loop1 00000088
+
+Symbol: Delay_Loop1
+   Definitions
+      At line 76 in file DC_motor.s
+   Uses
+      At line 79 in file DC_motor.s
+Comment: Delay_Loop1 used once
+Exit 00000098
+
+Symbol: Exit
+   Definitions
+      At line 83 in file DC_motor.s
+   Uses
+      At line 73 in file DC_motor.s
+Comment: Exit used once
+Loop 0000000A
+
+Symbol: Loop
+   Definitions
+      At line 25 in file DC_motor.s
+   Uses
+      At line 49 in file DC_motor.s
+      At line 65 in file DC_motor.s
+
+Loop0 00000012
+
+Symbol: Loop0
+   Definitions
+      At line 28 in file DC_motor.s
+   Uses
+      At line 47 in file DC_motor.s
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Relocatable symbols
+
+      At line 63 in file DC_motor.s
+
+Loop1 00000026
+
+Symbol: Loop1
+   Definitions
+      At line 35 in file DC_motor.s
+   Uses
+      At line 32 in file DC_motor.s
+      At line 44 in file DC_motor.s
+
+Loop2 00000052
+
+Symbol: Loop2
+   Definitions
+      At line 50 in file DC_motor.s
+   Uses
+      At line 33 in file DC_motor.s
+      At line 60 in file DC_motor.s
+
+Start 00000000
+
+Symbol: Start
+   Definitions
+      At line 20 in file DC_motor.s
+   Uses
+      At line 18 in file DC_motor.s
+Comment: Start used once
+10 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+M 0000003F
+
+Symbol: M
+   Definitions
+      At line 15 in file DC_motor.s
+   Uses
+      At line 75 in file DC_motor.s
+Comment: M used once
+1 symbol
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+GPIO_PORTB_DATA_R 00000000
+
+Symbol: GPIO_PORTB_DATA_R
+   Definitions
+      At line 11 in file DC_motor.s
+   Uses
+      At line 22 in file DC_motor.s
+Comment: GPIO_PORTB_DATA_R used once
+GPIO_PORTF_DATA_R 00000000
+
+Symbol: GPIO_PORTF_DATA_R
+   Definitions
+      At line 10 in file DC_motor.s
+   Uses
+      None
+Comment: GPIO_PORTF_DATA_R unused
+PORTB_Init 00000000
+
+Symbol: PORTB_Init
+   Definitions
+      At line 9 in file DC_motor.s
+   Uses
+      At line 21 in file DC_motor.s
+Comment: PORTB_Init used once
+PORTF_Init 00000000
+
+Symbol: PORTF_Init
+   Definitions
+      At line 8 in file DC_motor.s
+   Uses
+      None
+Comment: PORTF_Init unused
+4 symbols
+353 symbols in table

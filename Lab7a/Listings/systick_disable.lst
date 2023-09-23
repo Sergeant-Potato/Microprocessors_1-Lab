@@ -1,0 +1,178 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+    2 00000000 E000E010 
+                       NVIC_ST_CTRL_R
+                               EQU              0xE000E010
+    3 00000000 E000E014 
+                       NVIC_ST_RELOAD_R
+                               EQU              0xE000E014
+    4 00000000 E000E018 
+                       NVIC_ST_CURRENT_R
+                               EQU              0xE000E018
+    5 00000000 00010000 
+                       NVIC_ST_CTRL_COUNT
+                               EQU              0x00010000  ; Count flag
+    6 00000000 00000004 
+                       NVIC_ST_CTRL_CLK_SRC
+                               EQU              0x00000004  ; Clock Source
+    7 00000000 00000002 
+                       NVIC_ST_CTRL_INTEN
+                               EQU              0x00000002  ; Interrupt enable
+    8 00000000 00000001 
+                       NVIC_ST_CTRL_ENABLE
+                               EQU              0x00000001  ; Counter mode
+    9 00000000 00FFFFFF 
+                       NVIC_ST_RELOAD_M
+                               EQU              0x00FFFFFF  ; Counter load valu
+                                                            e
+   10 00000000                 EXPORT           SysTick_Disable
+   11 00000000         
+   12 00000000         SysTick_Disable
+   13 00000000 B503            PUSH             {R0,R1,LR}
+   14 00000002 4909            LDR              R1, =NVIC_ST_CTRL_R
+   15 00000004 F04F 0000       MOV              R0, #0      ; Clear Enable     
+                                                                
+   16 00000008 6008            STR              R0, [R1]
+   17 0000000A         ; set reload to maximum reload value
+   18 0000000A 4908            LDR              R1, =NVIC_ST_RELOAD_R
+   19 0000000C F06F 407F       LDR              R0, = 0x00FFFFFF ;    ; Specify
+                                                             RELOAD value
+   20 00000010 6008            STR              R0, [R1]    ; reload at maximum
+                                                                   
+   21 00000012         ; writing any value to CURRENT clears it
+   22 00000012 4907            LDR              R1, =NVIC_ST_CURRENT_R
+   23 00000014 F04F 0000       MOV              R0, #0
+   24 00000018 6008            STR              R0, [R1]    ; clear counter
+   25 0000001A         ; enable SysTick with core clock
+   26 0000001A 4903            LDR              R1, =NVIC_ST_CTRL_R
+   27 0000001C F04F 0005       MOV              R0, # 0x0005 ; Enable but no in
+                                                            terrupts (later)
+   28 00000020 6008            STR              R0, [R1]    ; ENABLE and CLK_SR
+                                                            C bits set
+   29 00000022 E8BD 4003       POP              {R0,R1,LR}
+   30 00000026 4770            BX               LR
+   31 00000028                 END
+              E000E010 
+              E000E014 
+              E000E018 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\systick_disable.d -o.\objects\systick_disable.o -I
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+.\RTE\_Target_1 -IC:\Users\rolopez\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSI
+S\Core\Include -IC:\Users\rolopez\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\D
+evice\Include\TM4C123 --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSIO
+N SETA 533" --predefine="_RTE_ SETA 1" --predefine="TM4C123GH6PM SETA 1" --pred
+efine="_RTE_ SETA 1" --list=.\listings\systick_disable.lst Systick_Disable.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 1 in file Systick_Disable.s
+   Uses
+      None
+Comment: .text unused
+SysTick_Disable 00000000
+
+Symbol: SysTick_Disable
+   Definitions
+      At line 12 in file Systick_Disable.s
+   Uses
+      At line 10 in file Systick_Disable.s
+Comment: SysTick_Disable used once
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+NVIC_ST_CTRL_CLK_SRC 00000004
+
+Symbol: NVIC_ST_CTRL_CLK_SRC
+   Definitions
+      At line 6 in file Systick_Disable.s
+   Uses
+      None
+Comment: NVIC_ST_CTRL_CLK_SRC unused
+NVIC_ST_CTRL_COUNT 00010000
+
+Symbol: NVIC_ST_CTRL_COUNT
+   Definitions
+      At line 5 in file Systick_Disable.s
+   Uses
+      None
+Comment: NVIC_ST_CTRL_COUNT unused
+NVIC_ST_CTRL_ENABLE 00000001
+
+Symbol: NVIC_ST_CTRL_ENABLE
+   Definitions
+      At line 8 in file Systick_Disable.s
+   Uses
+      None
+Comment: NVIC_ST_CTRL_ENABLE unused
+NVIC_ST_CTRL_INTEN 00000002
+
+Symbol: NVIC_ST_CTRL_INTEN
+   Definitions
+      At line 7 in file Systick_Disable.s
+   Uses
+      None
+Comment: NVIC_ST_CTRL_INTEN unused
+NVIC_ST_CTRL_R E000E010
+
+Symbol: NVIC_ST_CTRL_R
+   Definitions
+      At line 2 in file Systick_Disable.s
+   Uses
+      At line 14 in file Systick_Disable.s
+      At line 26 in file Systick_Disable.s
+
+NVIC_ST_CURRENT_R E000E018
+
+Symbol: NVIC_ST_CURRENT_R
+   Definitions
+      At line 4 in file Systick_Disable.s
+   Uses
+      At line 22 in file Systick_Disable.s
+Comment: NVIC_ST_CURRENT_R used once
+NVIC_ST_RELOAD_M 00FFFFFF
+
+Symbol: NVIC_ST_RELOAD_M
+   Definitions
+      At line 9 in file Systick_Disable.s
+   Uses
+      None
+Comment: NVIC_ST_RELOAD_M unused
+NVIC_ST_RELOAD_R E000E014
+
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Absolute symbols
+
+Symbol: NVIC_ST_RELOAD_R
+   Definitions
+      At line 3 in file Systick_Disable.s
+   Uses
+      At line 18 in file Systick_Disable.s
+Comment: NVIC_ST_RELOAD_R used once
+8 symbols
+347 symbols in table

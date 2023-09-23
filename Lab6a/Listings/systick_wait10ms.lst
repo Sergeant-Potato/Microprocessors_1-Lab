@@ -1,0 +1,117 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;------------SysTick_Wait10ms------------
+    2 00000000         ; Call this routine to wait for R0*10 ms 
+    3 00000000         ; Time delay using busy wait. This assumes 80 MHz clock
+    4 00000000         ; Input: R0  number of times to wait 10 ms before return
+                       ing
+    5 00000000         ; Output: none
+    6 00000000         ; Modifies: R0
+    7 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+    8 00000000                 EXPORT           SysTick_Wait10ms
+    9 00000000                 IMPORT           SysTick_Wait
+   10 00000000 000C3500 
+                       DELAY10MS
+                               EQU              800000      ; clock cycles in 1
+                                                            0 ms 
+   11 00000000         SysTick_Wait10ms
+   12 00000000 B510            PUSH             {R4, LR}    ; save R4 and LR
+   13 00000002 0004            MOVS             R4, R0      ; R4 = R0 = remaini
+                                                            ngWaits
+   14 00000004 D004            BEQ              SysTick_Wait10ms_done 
+                                                            ; R4 == 0, done
+   15 00000006         SysTick_Wait10ms_loop
+   16 00000006 4803            LDR              R0, =DELAY10MS ; R0 = DELAY10MS
+                                                            
+   17 00000008 F7FF FFFE       BL               SysTick_Wait ; wait 10 ms
+   18 0000000C 1E64            SUBS             R4, R4, #1  ; remainingWaits--
+   19 0000000E D8FA            BHI              SysTick_Wait10ms_loop ; if(R4>0
+                                                            ), wait another 10 
+                                                            ms
+   20 00000010         SysTick_Wait10ms_done
+   21 00000010 BD10            POP              {R4, PC}
+   22 00000012 00 00           ALIGN
+   23 00000014                 END
+              000C3500 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\systick_wait10ms.d -o.\objects\systick_wait10ms.o 
+-I.\RTE\_Target_1 -IC:\Users\Rafael\AppData\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMS
+IS\Core\Include -IC:\Users\Rafael\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\D
+evice\Include\TM4C123 --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSIO
+N SETA 535" --predefine="_RTE_ SETA 1" --predefine="TM4C123GH6PM SETA 1" --pred
+efine="_RTE_ SETA 1" --list=.\listings\systick_wait10ms.lst SysTick_Wait10ms.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 7 in file SysTick_Wait10ms.s
+   Uses
+      None
+Comment: .text unused
+SysTick_Wait10ms 00000000
+
+Symbol: SysTick_Wait10ms
+   Definitions
+      At line 11 in file SysTick_Wait10ms.s
+   Uses
+      At line 8 in file SysTick_Wait10ms.s
+Comment: SysTick_Wait10ms used once
+SysTick_Wait10ms_done 00000010
+
+Symbol: SysTick_Wait10ms_done
+   Definitions
+      At line 20 in file SysTick_Wait10ms.s
+   Uses
+      At line 14 in file SysTick_Wait10ms.s
+Comment: SysTick_Wait10ms_done used once
+SysTick_Wait10ms_loop 00000006
+
+Symbol: SysTick_Wait10ms_loop
+   Definitions
+      At line 15 in file SysTick_Wait10ms.s
+   Uses
+      At line 19 in file SysTick_Wait10ms.s
+Comment: SysTick_Wait10ms_loop used once
+4 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+DELAY10MS 000C3500
+
+Symbol: DELAY10MS
+   Definitions
+      At line 10 in file SysTick_Wait10ms.s
+   Uses
+      At line 16 in file SysTick_Wait10ms.s
+Comment: DELAY10MS used once
+1 symbol
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+SysTick_Wait 00000000
+
+Symbol: SysTick_Wait
+   Definitions
+      At line 9 in file SysTick_Wait10ms.s
+   Uses
+      At line 17 in file SysTick_Wait10ms.s
+Comment: SysTick_Wait used once
+1 symbol
+343 symbols in table
